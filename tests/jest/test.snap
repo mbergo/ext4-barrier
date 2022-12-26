@@ -1,0 +1,17 @@
+const { execSync } = require('child_process');
+
+test('barrier mount option', () => {
+  // Create a temporary ext4 file system
+  execSync('dd if=/dev/zero of=fs.img bs=1M count=100');
+  execSync('mkfs.ext4 fs.img');
+
+  // Mount the file system with the "barrier" option
+  execSync('mount -o barrier fs.img mnt');
+
+  // Check that the file system was mounted with barriers enabled
+  const mountOutput = execSync('mount').toString();
+  expect(mountOutput).toContain('barrier');
+
+  // Unmount the file system
+  execSync('umount mnt');
+});
